@@ -28,17 +28,19 @@
   </header>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-10 pb-20 max-w-6xl mx-auto">
-    {% for mood, emoji in moods.items() %}
-    <div class="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center">
+  {% for mood, emoji in moods.items() %}
+  <a href="/recommendation?mood={{ mood }}" class="block transition-transform hover:scale-105">
+    <div class="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center hover:shadow-lg">
       <div class="text-5xl mb-4">{{ emoji }}</div>
       <h2 class="text-lg font-semibold mb-4">{{ mood|capitalize }}</h2>
-      <a href="/recommendation?mood={{ mood }}">
-        <button class="bg-[#007c79] hover:bg-[#0a5f5d] text-white px-6 py-2 rounded-full font-medium text-sm">
-          Detayları Göster
-        </button>
-      </a>
+      <div class="bg-[#007c79] hover:bg-[#0a5f5d] text-white px-6 py-2 rounded-full font-medium text-sm">
+        Detayları Göster
+      </div>
     </div>
-    {% endfor %}
+  </a>
+  {% endfor %}
+</div>
+
   </div>
 
 </body>
