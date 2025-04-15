@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ruh Halini Seç</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="bg-white min-h-screen text-black font-sans">
+
+  <nav class="bg-white shadow p-4 flex justify-between items-center px-10">
+    <div class="text-xl font-bold flex items-center space-x-2">
+      <span>🎧 MoodPalette</span>
+    </div>
+    <ul class="flex space-x-6 text-sm font-medium">
+      <li><a href="/static" class="hover:underline">HOME</a></li>
+      <li><a href="#" class="hover:underline">MENÜ</a></li>
+      <li><a href="#" class="hover:underline">Yüz Analizi</a></li>
+      <li><a href="#" class="hover:underline">Günlüğüm</a></li>
+      <li><a href="#" class="hover:underline">Playlistlerim</a></li>
+      <li><a href="#" class="hover:underline">Soru Cevap</a></li>
+    </ul>
+  </nav>
+
+  <header class="text-center py-10">
+    <h1 class="text-4xl font-bold mb-2">RUH HALİNİ MOODPALETTE İLE YAKALA!</h1>
+    <p class="text-md text-gray-500">Ruh halini yansıtan müzikleri keşfet ve arkadaşlarınla paylaş.</p>
+  </header>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-10 pb-20 max-w-6xl mx-auto">
+    {% for mood, emoji in moods.items() %}
+    <div class="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center">
+      <div class="text-5xl mb-4">{{ emoji }}</div>
+      <h2 class="text-lg font-semibold mb-4">{{ mood|capitalize }}</h2>
+      <a href="/recommendation?mood={{ mood }}">
+        <button class="bg-[#007c79] hover:bg-[#0a5f5d] text-white px-6 py-2 rounded-full font-medium text-sm">
+          Detayları Göster
+        </button>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+
+</body>
+</html>
