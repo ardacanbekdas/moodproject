@@ -16,19 +16,16 @@
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 px-6 pb-20 max-w-6xl mx-auto">
     {% for song in songs %}
     <div class="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center">
-      <div class="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-2v13" />
-        </svg>
-      </div>
-      <h2 class="text-lg font-bold text-center">{{ song.track_name }}</h2>
-      <p class="text-sm text-gray-600 text-center mb-4">{{ song.track_artist }}</p>
-      <a href="{{ song.spotify_link }}" target="_blank">
-        <button class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-full font-semibold text-sm">
-          Spotify'da Dinle
-        </button>
-      </a>
-    </div>
+  <img src="{{ song.image_url }}" alt="{{ song.track_name }}" class="w-32 h-32 object-cover rounded-full mb-4">
+  <h2 class="text-lg font-bold text-center">{{ song.track_name }}</h2>
+  <p class="text-sm text-gray-600 text-center mb-4">{{ song.track_artist }}</p>
+  <a href="{{ song.spotify_link }}" target="_blank">
+    <button class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-full font-semibold text-sm">
+      Spotify'da Dinle
+    </button>
+  </a>
+</div>
+
     {% endfor %}
   </div>
 
