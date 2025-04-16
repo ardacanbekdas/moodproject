@@ -3,26 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <title>Yüz İfadesine Göre Şarkı Öner</title>
-  <script src="https://unpkg.com/face-api.js@0.22.2/dist/face-api.min.js"></script>
+  <script defer src="https://unpkg.com/face-api.js@0.22.2/dist/face-api.min.js"></script>
   <style>
     body {
       background-color: #0b0c2a;
       color: #e0e0e0;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       text-align: center;
-      padding: 40px 20px;
+      padding: 60px 20px;
+    }
+    video {
+      border-radius: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.4);
+      width: 100%;
+      max-width: 480px;
+      background: black;
     }
     h1 {
       font-size: 28px;
       margin-bottom: 30px;
-    }
-    video {
-      width: 100%;
-      max-width: 480px;
-      border-radius: 16px;
-      background: black;
-      margin-bottom: 20px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.4);
     }
     button {
       background-color: #10b981;
@@ -47,54 +47,59 @@
   <button onclick="analyzeExpression()">Analiz Et</button>
 
   <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      Promise.all([
-        faceapi.nets.tinyFaceDetector.loadFromUri('/static/models'),
-        faceapi.nets.faceExpressionNet.loadFromUri('/static/models')
-      ]).then(startVideo).catch(err => console.error("Model yükleme hatası:", err));
+    Promise.all([
+      faceapi.nets.tinyFaceDetector.loadFromUri('/static/models'),
+      faceapi.nets.faceExpressionNet.loadFromUri('/static/models')
+    ]).then(startVideo).catch(err => console.error("Model yükleme hatası:", err));
 
-      function startVideo() {
-        navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "user" },
-          audio: false
-        })
-        .then(stream => {
-          const video = document.getElementById('video');
-          video.srcObject = stream;
-          video.onloadedmetadata = () => {
-            video.play();
-          };
-        })
-        .catch(err => console.error('Kamera açma hatası:', err));
+    function startVideo() {
+      navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: "user"
+        },
+        audio: false
+      })
+      .then(stream => {
+        const video = document.getElementById('video');
+        video.srcObject = stream;
+        video.onloadedmetadata = () => {
+          video.play();
+        };
+      })
+      .catch(err => {
+        console.error('Kamera açma hatası:', err);
+        alert("Kamera açılamadı: " + err.message);
+      });
+    }
+
+    async function analyzeExpression() {
+      const video = document.getElementById('video');
+      const detection = await faceapi
+        .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+        .withFaceExpressions();
+
+      if (!detection) {
+        alert("Yüz algılanamadı, tekrar dene.");
+        return;
       }
 
-      window.analyzeExpression = async function () {
-        const video = document.getElementById('video');
-        const detection = await faceapi
-          .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
-          .withFaceExpressions();
+      console.log("İfade yüzdeleri:", detection.expressions);
 
-        if (!detection) return alert("Yüz algılanamadı, tekrar dene.");
+      const expressions = detection.expressions;
+      const mood = Object.entries(expressions).sort((a, b) => b[1] - a[1])[0][0];
 
-        console.log("İfade yüzdeleri:", detection.expressions);
-
-        const expressions = detection.expressions;
-        const mood = Object.entries(expressions).sort((a, b) => b[1] - a[1])[0][0];
-
-        const moodMap = {
-          happy: "mutlu",
-          sad: "üzgün",
-          neutral: "sakin",
-          angry: "enerjik",
-          disgusted: "romantik",
-          surprised: "yaz"
-        };
-
-        const mappedMood = moodMap[mood] || "mutlu";
-        window.location.href = `/recommendation?mood=${mappedMood}`;
+      const moodMap = {
+        happy: "mutlu",
+        sad: "üzgün",
+        neutral: "sakin",
+        angry: "enerjik",
+        disgusted: "romantik",
+        surprised: "yaz"
       };
-    });
+
+      const mappedMood = moodMap[mood] || "mutlu";
+      window.location.href = `/recommendation?mood=${mappedMood}`;
+    }
   </script>
 </body>
 </html>
-
