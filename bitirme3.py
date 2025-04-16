@@ -1,10 +1,13 @@
 from flask import Flask, render_template, request
 import pandas as pd
+import os
 
-app = Flask(__name__)
+# Bu dosyanın bulunduğu klasörü al
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+app = Flask(__name__, static_url_path='/static', static_folder='static')
 # CSV yükle
-df = pd.read_csv("song.csv")
+df = pd.read_csv(os.path.join(BASE_DIR, "song.csv"))
 df.dropna(subset=["track_name", "track_artist", "track_album_name"], inplace=True)
 
 # Spotify link oluştur
@@ -32,7 +35,7 @@ def get_mood_based_songs(mood):
     result["spotify_link"] = result["track_id"].apply(get_spotify_link)
     return result
 
-# Ana sayfa - moods
+# Ana sayfa - mood seçimi
 @app.route('/')
 def home():
     moods = {
@@ -51,6 +54,16 @@ def recommendation():
     mood = request.args.get("mood")
     recommended = get_mood_based_songs(mood).to_dict(orient="records")
     return render_template("recommendation.html", songs=recommended, mood=mood)
+
+# Yüz ifadesi sayfası
+@app.route('/face')
+def face():
+    return render_template("face.html")
+
+@app.route('/test')
+def test():
+    return "Bu sayfa çalışıyor mu?"
+
 
 if __name__ == '__main__':
     app.run(debug=True)
